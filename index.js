@@ -24,10 +24,14 @@ async function run() {
 
           // get all  product api 
           app.get('/products', async (req, res) => {
+               const page = req.query.page;
+               const size = req.query.size;
+               console.log({ page, size })
                const query = {};
                const cursor = productCollection.find(query);
                const products = await cursor.toArray();
-               res.send(products);
+               const count = await productCollection.estimatedDocumentCount();
+               res.send({ count, products });
           });
      } finally {
 
@@ -35,11 +39,12 @@ async function run() {
 }
 run().catch(err => console.log(console.error(err)));
 
-
+//Home Route
 app.get('/', (req, res) => {
      res.send('ema john server is running')
-})
+});
 
+// listening port
 app.listen(port, () => {
      console.log(`ema john server running on : ${port}`);
-})
+});
